@@ -11,6 +11,7 @@ api_key_input = st.sidebar.text_input('OpenAI API Key', type='password')
 
 st.session_state["OPEN_API_KEY"] = api_key_input
 openai_api_key = st.session_state.get("OPENAI_API_KEY")
+llm = OpenAI(temperature=0.7, openai_api_key=openai_api_key)
 
 if not openai_api_key:
     st.warning('Please enter your OpenAI API key!', icon='⚠')
@@ -40,3 +41,5 @@ with st.form(key="chatbot_form"):
     input_text = st.text_area("Query the document")
     submit = st.form_submit_button("Submit")
 
+if submit:
+    generate_response(input_text)
