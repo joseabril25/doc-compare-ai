@@ -36,7 +36,7 @@ class File(ABC):
         )
 
     def __str__(self) -> str:
-        return f"File(name={self.name}, id={self.id}, metadata={self.metadata})"
+        return f"File(name={self.name}, id={self.id}, metadata={self.metadata}, docs={self.docs})"
 
     def copy(self) -> "File":
         """Create a deep copy of this File"""
@@ -58,18 +58,18 @@ class PdfFile(File):
     @classmethod
     def from_bytes(cls, file: BytesIO) -> "PdfFile":
         pdf = fitz.open(stream=file.read(), filetype="pdf")  # type: ignore
-        docs = []
+        # docs = []
         for i, page in enumerate(pdf):
             text = page.get_text(sort=True)
             text = strip_consecutive_newlines(text)
             doc = Document(page_content=text.strip())
             doc.metadata["page"] = i + 1
             doc.metadata["source"] = f"p-{i+1}"
-            docs.append(doc)
+            # docs.append(doc)
         # file.read() mutates the file object, which can affect caching
         # so we need to reset the file pointer to the beginning
         file.seek(0)
-        return cls(name=file.name, id=md5(file.read()).hexdigest(), docs=docs)
+        return cls(name=file.name, id=md5(file.read()).hexdigest(), docs=[doc])
 
 
 def read_file(file: BytesIO) -> File:

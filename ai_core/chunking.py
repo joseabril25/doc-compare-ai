@@ -15,7 +15,7 @@ def chunk_file(
     chunked_docs = []
     for doc in file.docs:
         text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-            model_name=model_name,
+            # model_name=model_name,
             chunk_size=chunk_size,
             chunk_overlap=chunk_overlap,
         )
