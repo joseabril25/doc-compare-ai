@@ -12,13 +12,9 @@ api_key_input = st.sidebar.text_input('OpenAI API Key', type='password')
 st.session_state["OPENAI_API_KEY"] = api_key_input
 
 openai_api_key = st.session_state.get("OPENAI_API_KEY")
-llm = OpenAI(temperature=0.7, openai_api_key=openai_api_key)
 
 if not api_key_input:
     st.warning('Please enter your OpenAI API key!', icon='⚠')
-
-def generate_response(input_text):
-    st.info(llm(input_text))
 
 uploaded_file = st.file_uploader(
     "Upload a pdf",
@@ -39,7 +35,7 @@ except Exception as e:
 chunked_file = chunk_file(file, chunk_size=1000)
 
 with st.spinner('Loading document... Drink coffee, it is gonna take a while'):
-    chain = create_chain([chunked_file], llm=llm)
+    chain = create_chain([chunked_file])
 
 with st.form(key="chatbot_form"):
     input_text = st.text_area("Query the document")
