@@ -1,4 +1,4 @@
-from io import BytesIO
+from io import BytesIO, StringIO
 from typing import List, Any, Optional
 import re
 import fitz
@@ -58,18 +58,18 @@ class PdfFile(File):
     @classmethod
     def from_bytes(cls, file: BytesIO) -> "PdfFile":
         pdf = fitz.open(stream=file.read(), filetype="pdf")  # type: ignore
-        # docs = []
+        docus = []
         for i, page in enumerate(pdf):
             text = page.get_text(sort=True)
             text = strip_consecutive_newlines(text)
             doc = Document(page_content=text.strip())
             doc.metadata["page"] = i + 1
             doc.metadata["source"] = f"p-{i+1}"
-            # docs.append(doc)
+            docus.append(doc)
         # file.read() mutates the file object, which can affect caching
         # so we need to reset the file pointer to the beginning
         file.seek(0)
-        return cls(name=file.name, id=md5(file.read()).hexdigest(), docs=[doc])
+        return cls(name=file.name, id=md5(file.read()).hexdigest(), docs=docus)
 
 
 def read_file(file: BytesIO) -> File:
